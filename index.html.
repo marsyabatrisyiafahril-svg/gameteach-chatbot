@@ -1,0 +1,456 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameTeach | Classroom Game Planner</title>
+  <style>
+    :root {
+      --navy: #172554;
+      --blue: #3157c8;
+      --teal: #18a999;
+      --gold: #f5bd4f;
+      --bg: #f4f7fc;
+      --white: #ffffff;
+      --text: #202b45;
+      --muted: #68758d;
+      --border: #e3e9f3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 22px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .brand span { color: var(--gold); }
+
+    header p {
+      margin: 6px 0 0;
+      color: #dbe5ff;
+      font-size: 13px;
+    }
+
+    .status {
+      background: #24406d;
+      padding: 9px 13px;
+      border-radius: 30px;
+      font-size: 12px;
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 28px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 20px;
+    }
+
+    .panel, .chat-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px #1725540b;
+    }
+
+    .sidebar { padding: 22px; }
+
+    h2 { font-size: 18px; margin: 0 0 12px; }
+
+    .intro {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
+
+    .feature {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .feature:last-child { border-bottom: 0; }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .feature span { color: var(--muted); font-size: 12px; }
+
+    .chat-heading {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-heading h2 { margin: 0; }
+
+    button, select, input { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .reset {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #chat {
+      height: 390px;
+      overflow-y: auto;
+      padding: 20px;
+      background: #fbfcff;
+    }
+
+    .message {
+      max-width: 90%;
+      padding: 13px 15px;
+      border-radius: 15px;
+      margin-bottom: 14px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .bot {
+      background: #edf2ff;
+      border-bottom-left-radius: 4px;
+    }
+
+    .user {
+      background: var(--blue);
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message strong { color: inherit; }
+
+    .suggestions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 18px 16px;
+      background: #fbfcff;
+    }
+
+    .suggestions button {
+      background: white;
+      border: 1px solid #ccd7f2;
+      color: var(--blue);
+      padding: 9px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .suggestions button:hover {
+      background: #edf2ff;
+    }
+
+    .composer {
+      display: flex;
+      gap: 10px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    #userInput {
+      min-width: 0;
+      flex: 1;
+      border: 1px solid #d5deec;
+      border-radius: 12px;
+      padding: 13px;
+      outline: none;
+    }
+
+    #userInput:focus { border-color: var(--blue); }
+
+    .send {
+      background: var(--blue);
+      color: white;
+      border: 0;
+      border-radius: 12px;
+      padding: 0 19px;
+      font-weight: bold;
+    }
+
+    .send:hover { background: var(--navy); }
+
+    .note {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 0 18px 16px;
+      margin: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 8px 15px 25px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      main { grid-template-columns: 1fr; margin-top: 16px; }
+      .sidebar { padding: 18px; }
+      .feature { padding: 9px 0; }
+      #chat { height: 360px; }
+      header { padding: 18px 5%; }
+      .brand { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand">🎮 Game<span>Teach</span></div>
+      <p>Your Classroom Game Planner</p>
+    </div>
+    <div class="status">● Ready to plan a lesson</div>
+  </header>
+
+  <main>
+    <aside class="panel sidebar">
+      <h2>Make learning a game!</h2>
+      <p class="intro">
+        Turn ordinary lessons into fun classroom challenges.
+        Tell GameTeach about your lesson and get a ready-to-use game idea.
+      </p>
+
+      <div class="feature">
+        <strong>🧩 Creative activities</strong>
+        <span>Quizzes, treasure hunts and team challenges</span>
+      </div>
+      <div class="feature">
+        <strong>🎯 Learning-focused</strong>
+        <span>Activities connected to lesson objectives</span>
+      </div>
+      <div class="feature">
+        <strong>👥 Classroom-ready</strong>
+        <span>Ideas for different class sizes and resources</span>
+      </div>
+      <div class="feature">
+        <strong>📚 Multiple subjects</strong>
+        <span>English, Mathematics, Science and more</span>
+      </div>
+    </aside>
+
+    <section class="chat-panel">
+      <div class="chat-heading">
+        <h2>💬 Chat with GameTeach</h2>
+        <button class="reset" id="resetBtn">Reset chat ↻</button>
+      </div>
+
+      <div id="chat" aria-live="polite">
+        <div class="message bot">Hello, teacher! 👋 I'm GameTeach.
+
+I can help you turn your lesson into an exciting educational game!
+
+To get started, tell me:
+1. What subject and topic are you teaching?
+2. What year level are your pupils?
+3. How much time do you have?
+4. What classroom resources are available?
+
+For example: "Create an English vocabulary game about food for Year 4 pupils. I have 30 pupils, 20 minutes and flashcards."</div>
+      </div>
+
+      <div class="suggestions">
+        <button data-prompt="Create an English vocabulary game about food for Year 4 pupils. I have 30 pupils, 20 minutes and flashcards.">🍎 English game</button>
+        <button data-prompt="Create a Mathematics multiplication game for Year 3 pupils. I have 25 pupils and 15 minutes.">🔢 Maths challenge</button>
+        <button data-prompt="Create a Science game about the solar system for Year 5 pupils using a projector.">🪐 Science game</button>
+        <button data-prompt="What classroom games can I use without digital devices?">🎲 No-tech games</button>
+      </div>
+
+      <form class="composer" id="chatForm">
+        <input id="userInput" type="text"
+          placeholder="Describe your lesson here..."
+          autocomplete="off" aria-label="Your message">
+        <button class="send" type="submit">Send ➤</button>
+      </form>
+      <p class="note">GameTeach uses built-in examples and rules. Check activities before using them in class.</p>
+    </section>
+  </main>
+
+  <footer>GameTeach · Making classroom learning more engaging</footer>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("userInput");
+
+    function addMessage(text, sender) {
+      const message = document.createElement("div");
+      message.className = "message " + sender;
+      message.textContent = text;
+      chat.appendChild(message);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function makeGame(topic, type, resources, duration) {
+      return `🎮 YOUR CLASSROOM GAME PLAN
+
+📚 Lesson topic:
+${topic}
+
+🎯 Game type:
+${type}
+
+⏰ Suggested duration:
+${duration}
+
+🧰 Materials:
+${resources}
+
+📖 HOW TO PLAY
+
+1. Introduction (3 minutes)
+Explain the learning goal and introduce the game challenge.
+
+2. Set up (2 minutes)
+Divide pupils into small groups. Explain the rules and demonstrate one example.
+
+3. Play the game
+Give each group a challenge related to ${topic}. Pupils discuss their answers and take turns responding. Award one point for each correct answer.
+
+4. Check understanding
+Ask pupils to explain how they reached their answers. Correct misunderstandings and provide hints when needed.
+
+5. Reflection
+Ask pupils what they learned and which challenge they found most useful.
+
+🏆 SCORING
+• 1 point for each correct answer.
+• 1 bonus point for teamwork and explaining an answer.
+• Celebrate effort, participation and improvement.
+
+💡 TEACHER TIP
+Adapt the questions to your pupils' abilities. Make sure every pupil has a chance to participate.
+
+Would you like to try another subject or game type?`;
+    }
+
+    function getReply(message) {
+      const text = message.toLowerCase();
+
+      if (/\b(hello|hi|hey)\b/.test(text)) {
+        return "Hello, teacher! 👋 Tell me your lesson topic, pupils' year level, available time and classroom resources. I'll help you plan a game!";
+      }
+
+      if (text.includes("without digital") || text.includes("no digital") ||
+          text.includes("no technology") || text.includes("no-tech")) {
+        return makeGame("Any suitable lesson topic", "Flashcard relay or team quiz",
+          "Paper, pencils and handmade flashcards", "15–20 minutes");
+      }
+
+      if (text.includes("treasure") || text.includes("hunt")) {
+        return makeGame("Your chosen lesson topic", "Treasure Hunt",
+          "Printed clues, question cards and small paper rewards", "20–30 minutes");
+      }
+
+      if (text.includes("role-play") || text.includes("role play")) {
+        return makeGame("Your chosen lesson topic", "Role-Play",
+          "Situation cards and simple props", "15–20 minutes");
+      }
+
+      if (text.includes("team challenge") || text.includes("team game")) {
+        return makeGame("Your chosen lesson topic", "Team Challenge",
+          "Question cards, paper and pencils", "15–20 minutes");
+      }
+
+      if (text.includes("quiz") || text.includes("trivia")) {
+        return makeGame("Your chosen lesson topic", "Quiz and Trivia",
+          "Question cards, a board and score sheet", "10–15 minutes");
+      }
+
+      const subjectWords = [
+        "english", "vocabulary", "grammar", "food", "mathematics",
+        "maths", "multiplication", "science", "solar system",
+        "bahasa melayu", "history"
+      ];
+
+      const hasTopic = subjectWords.some(word => text.includes(word));
+
+      if (hasTopic) {
+        let type = "Team Challenge";
+        if (text.includes("quiz")) type = "Quiz and Trivia";
+        if (text.includes("treasure")) type = "Treasure Hunt";
+        if (text.includes("role-play") || text.includes("role play")) type = "Role-Play";
+        if (text.includes("mystery")) type = "Mystery Game";
+
+        let resources = "Paper, pencils and a whiteboard";
+        if (text.includes("flashcard")) resources = "Flashcards and a score sheet";
+        if (text.includes("projector")) resources = "A projector, computer and question slides";
+        if (text.includes("smartphone") || text.includes("tablet")) resources = "Available digital devices and prepared questions";
+
+        let duration = "20 minutes";
+        if (text.includes("10 minutes")) duration = "10 minutes";
+        if (text.includes("15 minutes")) duration = "15 minutes";
+        if (text.includes("30 minutes")) duration = "30 minutes";
+
+        return makeGame(message, type, resources, duration);
+      }
+
+      return "Sorry, I'm not sure I understand your request. Could you tell me your lesson topic, preferred game type (quiz, treasure hunt, role-play or team challenge), or available classroom resources? For example: Create an English vocabulary game about food for Year 4 pupils.";
+    }
+
+    function sendMessage(message) {
+      const cleaned = message.trim();
+      if (!cleaned) return;
+      addMessage(cleaned, "user");
+      input.value = "";
+
+      const reply = getReply(cleaned);
+      addMessage(reply, "bot");
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      sendMessage(input.value);
+    });
+
+    document.querySelectorAll("[data-prompt]").forEach(button => {
+      button.addEventListener("click", () => {
+        sendMessage(button.dataset.prompt);
+      });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      chat.innerHTML = "";
+      addMessage("Hello, teacher! 👋 I'm GameTeach. Tell me your lesson topic, year level, activity duration and available resources. Let's plan a fun classroom game!", "bot");
+    });
+  </script>
+</body>
+</html>
